@@ -4,24 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
-
+import android.database.Cursor;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.PopupWindow.OnDismissListener;
-
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
+import android.widget.ImageView;
+import android.widget.PopupWindow.OnDismissListener;
+import android.widget.TextView;
 
 /**
  * QuickAction dialog.
@@ -53,6 +50,7 @@ public class QuickAction extends PopupWindows implements OnDismissListener {
 	public static final int ANIM_GROW_FROM_CENTER = 3;
 	public static final int ANIM_AUTO = 4;
 	
+	private Cursor currentItemCursor;
 	/**
 	 * Constructor.
 	 * 
@@ -80,6 +78,35 @@ public class QuickAction extends PopupWindows implements OnDismissListener {
 		mAnimStyle		= ANIM_AUTO;
 		mAnimateTrack	= true;
 		mChildPos		= 0;
+	}
+	/**
+	 * Constructor.
+	 * 
+	 * @param context Context
+	 */
+	public QuickAction(Context context, Cursor identifier) {
+		super(context);
+		
+		inflater 	= (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+		mTrackAnim 	= AnimationUtils.loadAnimation(context, R.anim.rail);
+		
+		mTrackAnim.setInterpolator(new Interpolator() {
+			public float getInterpolation(float t) {
+	              // Pushes past the target area, then snaps back into place.
+	                // Equation for graphing: 1.2-((x*1.6)-1.1)^2
+				final float inner = (t * 1.55f) - 1.1f;
+				
+	            return 1.2f - inner * inner;
+	        }
+		});
+	        
+		setRootViewId(R.layout.quickaction);
+		
+		mAnimStyle		= ANIM_AUTO;
+		mAnimateTrack	= true;
+		mChildPos		= 0;
+		this.currentItemCursor = identifier;
 	}
 	
 	/**
@@ -314,6 +341,17 @@ public class QuickAction extends PopupWindows implements OnDismissListener {
 		}
 	}
 	
+	
+
+	public Cursor getCurrentItemCursor() {
+		return currentItemCursor;
+	}
+	public void setCurrentItemCursor(Cursor currentItemCursor) {
+		this.currentItemCursor = currentItemCursor;
+	}
+
+
+
 	/**
 	 * Listener for item click
 	 *
