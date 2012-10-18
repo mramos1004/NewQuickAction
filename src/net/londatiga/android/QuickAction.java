@@ -51,6 +51,7 @@ public class QuickAction extends PopupWindows implements OnDismissListener {
 	public static final int ANIM_AUTO = 4;
 	
 	private Cursor currentItemCursor;
+	private final int cursorPosition;
 	/**
 	 * Constructor.
 	 * 
@@ -78,6 +79,7 @@ public class QuickAction extends PopupWindows implements OnDismissListener {
 		mAnimStyle		= ANIM_AUTO;
 		mAnimateTrack	= true;
 		mChildPos		= 0;
+		cursorPosition = -1;
 	}
 	/**
 	 * Constructor.
@@ -107,6 +109,7 @@ public class QuickAction extends PopupWindows implements OnDismissListener {
 		mAnimateTrack	= true;
 		mChildPos		= 0;
 		this.currentItemCursor = identifier;
+		this.cursorPosition = identifier.getPosition();
 	}
 	
 	/**
@@ -348,6 +351,12 @@ public class QuickAction extends PopupWindows implements OnDismissListener {
 	}
 	public void setCurrentItemCursor(Cursor currentItemCursor) {
 		this.currentItemCursor = currentItemCursor;
+	}
+
+
+
+	public int getCursorPosition() {
+		return cursorPosition;
 	}
 
 
